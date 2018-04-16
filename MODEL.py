@@ -12,11 +12,18 @@ Tasks = list()
 
 @app.route('/')
 def home():
-    return "Hello, world!"
+    return "Welcome to MODEL!"
 
 
-@app.route('/check_in', methods=['POST'])
+@app.route('/check_in', methods=['POST', 'PUT'])
 def check_in():
+    if request.method == 'PUT':
+        for x in Tasks:
+            if x.ID == request.args.get('task_id'):
+                for y in x.work:
+                    if y.request.args.get('work_id'):
+                        y.end_time = datetime.now()
+                        return jsonify(y.serialize())
     if request.method == 'POST':
         work = Work()
         work.work_id = request.args.get('work_id')
@@ -29,6 +36,15 @@ def check_in():
         return jsonify(work.serialize())
     else:
         return jsonify([])
+
+
+@app.route('/prioritize', method=['PUT'])
+def prioritize():
+    for x in Tasks:
+        if x.ID == request.args.get('task_id'):
+            x.rank = request.args.get('rank')
+            return jsonify(x.serialize())
+    return jsonify(None)
 
 
 @app.route('/tasks')
