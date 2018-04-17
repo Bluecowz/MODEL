@@ -6,6 +6,11 @@ class Task:
         self.work = list()
         self.rank = 3
         self.posted = None
+        self.est_hrs = None
+
+    def set_company(self, company):
+        self.company = company
+        self.rank = self.company.rank
 
     def set_rank(self, rank):
         self.rank = rank
@@ -29,5 +34,6 @@ class Task:
             'company': self.company.serialize(),
             'rank': self.rank,
             'posted': self.posted,
-            'work': derp
+            'work': derp,
+            'est-hrs': self.est_hrs
         }
