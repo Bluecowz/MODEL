@@ -38,7 +38,7 @@ def check_in():
         return jsonify([])
 
 
-@app.route('/prioritize', method=['PUT'])
+@app.route('/prioritize', methods=['PUT'])
 def prioritize():
     for x in Tasks:
         if x.ID == request.args.get('task_id'):
