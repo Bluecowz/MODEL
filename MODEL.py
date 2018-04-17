@@ -89,10 +89,10 @@ def task():
     return None
 
 
-@app.route('/company/<name>', methods=['POST', 'GET'])
+@app.route('/company', methods=['POST', 'GET'])
 def company(name):
     if request.method == 'POST':
-        new_cust = Customer(name=name)
+        new_cust = Customer(request.method.args('name'))
         Customers.append(new_cust)
         return jsonify(new_cust.serialize())
     else:
