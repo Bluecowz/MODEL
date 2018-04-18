@@ -30,7 +30,7 @@ class Task:
             derp = derp + str(x.serialize()) + ','
         derp = derp + '}'
         return {
-            'name': self.ID,
+            'id': self.ID,
             'company': self.company.serialize(),
             'rank': self.rank,
             'posted': self.posted,

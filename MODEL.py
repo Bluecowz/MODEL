@@ -9,6 +9,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 
+
 Perform = Performance()
 Customers = list()
 Tasks = list()
@@ -20,7 +21,7 @@ def home():
     return "Welcome to MODEL!"
 
 
-@app.route('/check_in', methods=['POST', 'PUT'])
+@app.route('/check_in', methods=['POST', 'PUT', 'OPTIONS'])
 def check_in():
     try:
         if request.method == 'PUT':
@@ -29,7 +30,10 @@ def check_in():
                     for y in x.work:
                         if request.args.get('work_id') == y.work_id:
                             y.end_time = datetime.now()
-                            return jsonify(y.serialize())
+                            response = jsonify(y.serialize())
+                            response.headers.add('Access-Control-Allow-Origin', '*')
+                            response.headers.add('Access-Control-Allow-Methods', 'PUT,OPTIONS')
+                            return response
         if request.method == 'POST':
             work = Work()
             work.work_id = request.args.get('work_id')
@@ -39,22 +43,33 @@ def check_in():
             for x in Tasks:
                 if x.ID == work.task_id:
                     x.work.append(work)
-            return jsonify(work.serialize())
+            response = jsonify(work.serialize())
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            response.headers.add('Access-Control-Allow-Methods', 'PUT,OPTIONS,POST')
+            return response
         else:
-            return jsonify([])
+            response = jsonify([])
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            response.headers.add('Access-Control-Allow-Methods', 'PUT,OPTIONS,POST')
+            return response
     finally:
         Perform.end("check_in")
 
 
-@app.route('/prioritize', methods=['PUT'])
+@app.route('/prioritize', methods=['PUT', 'OPTIONS'])
 def prioritize():
     Perform.start()
     try:
         for x in Tasks:
             if x.ID == request.args.get('task_id'):
                 x.rank = int(request.args.get('rank'))
-                return jsonify(x.serialize())
-        return jsonify(None)
+                response = jsonify(x.serialize())
+                response.headers.add('Access-Control-Allow-Origin', '*')
+                response.headers.add('Access-Control-Allow-Methods', 'PUT,OPTIONS')
+                return response
+        response = jsonify(None)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     finally:
         Perform.end("Prioritize")
 
@@ -76,7 +91,9 @@ def list_tasks():
             if x.rank == 3:
                 tasks.append((x.serialize()))
 
-        return jsonify(tasks)
+        response = jsonify(tasks)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     finally:
         Perform.end("get_tasks")
 
@@ -88,7 +105,9 @@ def list_companies():
         companies = []
         for derp in Customers:
             companies.append(derp.serialize())
-        return jsonify(companies)
+        response = jsonify(companies)
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     finally:
         Perform.end("list_companies")
 
@@ -113,13 +132,19 @@ def task():
                 derp.set_company(c)
             derp.posted = datetime.now()
             Tasks.append(derp)
-            return jsonify(derp.serialize())
+            response = jsonify(derp.serialize())
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
         else:
             ID = request.args.get('id')
             for derp in Tasks:
-                if derp.name == ID:
-                    return jsonify(derp.serialize())
-        return jsonify([])
+                if derp.ID == ID:
+                    response = jsonify(derp.serialize())
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    return response
+        response = jsonify([])
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     finally:
         Perform.end("task")
 
@@ -131,19 +156,27 @@ def company():
         if request.method == 'POST':
             new_cust = Customer(request.args.get('name'))
             Customers.append(new_cust)
-            return jsonify(new_cust.serialize())
+            response = jsonify(new_cust.serialize())
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
         else:
             for derp in Customers:
                 if derp.name == request.args.get('name'):
-                    return jsonify(derp.serialize())
-        return jsonify([])
+                    response = jsonify(derp.serialize())
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    return response
+        response = jsonify([])
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     finally:
         Perform.end("company")
 
 
 @app.route('/performance', methods=['GET'])
 def perform():
-    return jsonify(Perform.serialize_stats())
+    response = jsonify(Perform.serialize_stats())
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/month', methods=['GET'])
@@ -154,7 +187,9 @@ def stats():
         for x in Tasks:
             for y in x.work:
                 work.append(y)
-        return jsonify(Stats.get_stats(Tasks, work))
+        response = jsonify(Stats.get_stats(Tasks, work))
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     finally:
         Perform.end("month")
 
