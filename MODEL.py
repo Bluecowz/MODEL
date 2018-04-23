@@ -9,7 +9,6 @@ from datetime import datetime
 app = Flask(__name__)
 
 
-
 Perform = Performance()
 Customers = list()
 Tasks = list()

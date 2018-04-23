@@ -25,10 +25,10 @@ class Task:
         return time
 
     def serialize(self):
-        derp = '{ '
+        derp = list()
         for x in self.work:
-            derp = derp + str(x.serialize()) + ','
-        derp = derp + '}'
+            derp.append(x.serialize())
+
         return {
             'id': self.ID,
             'company': self.company.serialize(),
