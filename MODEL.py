@@ -7,12 +7,9 @@ from Models.Stats import Stats
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-
-
 Perform = Performance()
 Customers = list()
 Tasks = list()
-
 
 
 @app.route('/')
