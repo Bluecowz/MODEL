@@ -132,9 +132,9 @@ def task():
             response.headers.add('Access-Control-Allow-Origin', '*')
             return response
         else:
-            ID = request.args.get('id')
+            what = request.args.get('id')
             for derp in Tasks:
-                if derp.ID == ID:
+                if derp.ID == int(what):
                     response = jsonify(derp.serialize())
                     response.headers.add('Access-Control-Allow-Origin', '*')
                     return response
