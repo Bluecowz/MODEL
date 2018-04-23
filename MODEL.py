@@ -4,7 +4,7 @@ from Models.Task import Task
 from Models.Work import Work
 from Models.Performance import Performance
 from Models.Stats import Stats
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -191,6 +191,48 @@ def stats():
         return response
     finally:
         Perform.end("month")
+
+
+@app.route('/fake_me')
+def fake_me():
+    derp_comp = Customer(name="Mike LLC")
+    Customers.append(derp_comp)
+
+    for x in range(1, 6):
+        task_one = Task()
+        task_one.ID = x
+        task_one.company = derp_comp
+        task_one.posted = datetime.now()
+        task_one.est_hrs = 7
+
+        w1 = Work()
+        w1.task_id = x
+        w1.work_id = 1
+        w1.start_time = datetime.now()
+        w1.end_time = datetime.now() + timedelta(hours=-4)
+
+        w2 = Work()
+        w2.task_id = x
+        w2.work_id = 2
+        w2.start_time = datetime.now()
+        w2.end_time = datetime.now() + timedelta(hours=-4)
+
+        w3 = Work()
+        w3.task_id = x
+        w3.work_id = 3
+        w3.start_time = datetime.now()
+        w3.end_time = datetime.now() + timedelta(hours=-4)
+
+        task_one.work.append(w1)
+        task_one.work.append(w2)
+        task_one.work.append(w3)
+        Tasks.append(task_one)
+
+        derp_comp.add_task()
+
+    return "Fake Data Added"
+
+
 
 
 if __name__ == '__main__':
